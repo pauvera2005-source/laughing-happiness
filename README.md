@@ -1,22 +1,26 @@
 # Waaaaaac Woooooooc (AC.03)
-Aquesta és una petita demo que simula una "groan tube" utilitzant el moviment del mòbil i síntesi sonora amb p5.js i p5.sound.
 
-## Com provar-ho
+Aquest projecte simula una "groan tube" utilitzant el moviment del mòbil i síntesi sonora amb p5.js i p5.sound.
 
-1. Obre la pàgina desplegada (Vercel).
-2. Prem el botó "Start Groan Tube" per activar l'àudio.
-3. Accepta els permisos de moviment si el navegador els demana.
-4. Mou o gira el mòbil per generar el so.
+## Mapejos utilitzats
 
-## Arxius
+- **Intensitat del moviment**: calculada a partir de la diferència entre acceleracions consecutives. Aquest valor controla:
+  - el **volum** de l’oscil·lador
+  - el **brillo** del so a través del filtre low-pass
 
-- `index.html` – Carrega p5.js, p5.sound i el sketch principal.
-- `sketch.js` – Conté el codi de lectura del moviment i generació del so.
+- **Orientació del mòbil (accelerationZ)**:
+  - controla el **pitch** del so dins d’un rang definible (pitch mínim i màxim)
 
-## Tecnologies
+Tots els valors s’han suavitzat amb `lerp` per evitar canvis bruscos.
 
-- p5.js  
-- p5.sound  
-- JavaScript
+## Disseny sonor
 
+- Oscil·lador tipus **sawtooth** per aconseguir un so més ric i aspre.
+- **Filtre low-pass** per controlar el timbre segons la intensitat del moviment.
+- Control d’amplitud suau mitjançant interpolació (`osc.amp(..., 0.05)`).
 
+## Dificultats trobades
+
+- Ajustar la sensibilitat del mòbil perquè no reaccionés massa o massa poc.
+- Evitar salts bruscos en el pitch i el volum (solució: suavitzat amb `lerp`).
+- Gestió del permís de sensors en iOS i activació del context d’àudio en mòbil.
