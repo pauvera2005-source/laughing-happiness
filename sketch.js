@@ -1,79 +1,113 @@
-let mic, amplitude, fft;
+let mic, amp;
+let level = 0;
+
+let ball;
+let colors = ["red", "green", "blue"];
+let activeColor = "red";
+
+let started = false;
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
-  angleMode(DEGREES);
+  createCanvas(400, 600);
+  textAlign(CENTER, CENTER);
 
-  // Habilitar audio
   mic = new p5.AudioIn();
-  mic.start();
-
-  amplitude = new p5.Amplitude();
-  amplitude.setInput(mic);
-
-  fft = new p5.FFT(0.8, 64);
-  fft.setInput(mic);
-
-  userStartAudio(); // Necesario para activar audio por interacción
+  amp = new p5.Amplitude();
 }
 
 function draw() {
-  background(10);
+  background(20);
 
-  // Nivel general de volumen
-  let level = amplitude.getLevel();
-  let volMapped = map(level, 0, 0.3, 50, 200);
+  if (!started) {
+    fill(255);
+    textSize(20);
+    text("TOCA LA PANTALLA\nPER ACTIVAR EL MICRÒFON", width/2, height/2);
+    return;
+  }
 
-  // Obtener espectro
-  let spectrum = fft.analyze();
-  let bass = fft.getEnergy("bass"); // 20-140 Hz
+  level = amp.getLevel();
 
-  // Mapeo de parámetros fractales
-  let branchLength = map(level, 0, 0.3, 80, 200);
-  let angle = map(bass, 0, 255, 10, 45);
+  checkMicInput();
 
-  // Color reactivo
-  let hue = map(level, 0, 0.3, 100, 255);
+  ball.update();
+  ball.show();
 
-  translate(width / 2, height);
-  stroke(hue, 200, 255);
-  strokeWeight(2);
-
-  drawBranch(branchLength, angle);
-
-  // Barra de nivel de audio
-  drawAudioMeter(volMapped);
+  drawUI();
 }
 
-// Función recursiva del árbol
-function drawBranch(len, angle) {
-  line(0, 0, 0, -len);
-  translate(0, -len);
+// 🔓 DESBLOQUEIG D’ÀUDIO (OBLIGATORI)
+function mousePressed() {
+  if (!started) {
+    userStartAudio();
+    mic.start();
+    amp.setInput(mic);
 
-  if (len > 10) {
-    push();
-    rotate(angle);
-    drawBranch(len * 0.67, angle);
-    pop();
-
-    push();
-    rotate(-angle);
-    drawBranch(len * 0.67, angle);
-    pop();
+    ball = new FallingBall();
+    started = true;
   }
 }
 
-// Pequeña interfaz de volumen
-function drawAudioMeter(value) {
-  push();
-  noStroke();
-  fill(255);
-  rect(20, height - 40, value, 15);
-  textSize(14);
-  text("Nivel de audio", 20, height - 45);
-  pop();
+// 📢 CONTROL AMB SOROLL
+function checkMicInput() {
+  if (level > 0.015 && level < 0.035) {
+    activeColor = "red";
+  } else if (level >= 0.035 && level < 0.06) {
+    activeColor = "green";
+  } else if (level >= 0.06) {
+    activeColor = "blue";
+  }
 }
 
-function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
+// 🎨 UI
+function drawUI() {
+  fill(255);
+  textSize(16);
+  text("Color actiu: " + activeColor, width/2, 30);
+  text("Volum: " + level.toFixed(3), width/2, 55);
+
+  // Barra volum
+  noStroke();
+  fill(100);
+  rect(100, height - 30, 200, 10);
+  fill(0, 255, 0);
+  rect(100, height - 30, level * 3000, 10);
+}
+
+// 🔵 BOLA QUE CAU
+class FallingBall {
+  constructor() {
+    this.x = width / 2;
+    this.y = -20;
+    this.r = 20;
+    this.speed = 3;
+    this.colorName = random(colors);
+  }
+
+  update() {
+    this.y += this.speed;
+
+    if (this.y > height - 60) {
+      if (this.colorName === activeColor) {
+        this.reset();
+      } else {
+        noLoop();
+        fill(255, 0, 0);
+        textSize(30);
+        text("GAME OVER", width/2, height/2);
+      }
+    }
+  }
+
+  reset() {
+    this.y = -20;
+    this.colorName = random(colors);
+  }
+
+  show() {
+    if (this.colorName === "red") fill(255, 0, 0);
+    if (this.colorName === "green") fill(0, 255, 0);
+    if (this.colorName === "blue") fill(0, 0, 255);
+    noStroke();
+    circle(this.x, this.y, this.r * 2);
+  }
 }
