@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Groan Tube | Pau Vera</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/addons/p5.sound.min.js"></script>
+    <script src="sketch.js"></script>
+</head>
+<body>
+
+<canvas id="matrix-bg"></canvas>
+<div class="scanlines"></div>
+
+<div class="project-view">
+    
+    <header class="nav-header">
+        <a href="../../index.html" class="back-btn">
+            <span>&#60;</span> [ ABORTAR SIMULACIÓ ]
+        </a>
+        <div class="id-number">SYS.AUDIO.VISUALIZER</div>
+    </header>
+
+    <div class="simulation-status">
+        <span>MODE: INPUT SENSORIAL</span>
+        <span class="blink">● MIC ON</span>
+    </div>
+
+    <div id="sketch-holder"></div>
+
+    <div id="ui-controls">
+        </div>
+
+    <section class="controls-description">
+        <h3>>> PARÀMETRES DEL SISTEMA</h3>
+        <p>
+            Experiment generatiu amb visualització reactiva.
+            Les formes geomètriques muten segons l'entrada sonora i l'acceleròmetre.
+            <br><br>
+            <strong>Controls:</strong> S (Activar So) · R (Reiniciar Visual)
+        </p>
+    </section>
+
+</div>
+
+<script>
+    const canvas = document.getElementById('matrix-bg');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const characters = '01GROANTUBE01XY0101HZ0101DB01'; 
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    const drops = [];
+    for (let i = 0; i < columns; i++) { drops[i] = 1; }
+    function draw() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#0F0'; 
+        ctx.font = fontSize + 'px "Share Tech Mono"';
+        for (let i = 0; i < drops.length; i++) {
+            const text = characters.charAt(Math.floor(Math.random() * characters.length));
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                drops[i] = 0;
+            }
+            drops[i]++;
+        }
+    }
+    setInterval(draw, 33);
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
+</script>
+
+</body>
+</html>

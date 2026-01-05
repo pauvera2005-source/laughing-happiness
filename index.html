@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pau Vera | Portafoli Art Digital</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <canvas id="matrix-bg"></canvas>
+    
+    <div class="scanlines"></div>
+
+    <div class="content-wrapper">
+        <header class="hero">
+            <h1 class="glitch" data-text="SINFONIES DE LA MATÈRIA DIGITAL">SINFONIES DE LA MATÈRIA DIGITAL</h1>
+            <p>> Portafoli d’art generatiu i interactiu · Pau Vera_</p>
+        </header>
+
+        <main class="projects">
+
+            <section class="project-card">
+                <div class="card-header">
+                    <h2>Ecosistemes: Pedra, Paper, Tisora</h2>
+                    <span class="id-number">ID: 001</span>
+                </div>
+                <p class="tags">[#Algoritmes] [#VidaArtificial] [#p5js]</p>
+                <div class="terminal-text">
+                    <p>Simulació d’agents on tres espècies competeixen per l’espai. Comportaments emergents i dinàmiques de població detectades.</p>
+                </div>
+                <a class="project-btn" href="projects/pedra_paper_tisora_PauVera/index.html">
+                    [ EXECUTAR PROJECTE ]
+                </a>
+            </section>
+
+            <section class="project-card">
+                <div class="card-header">
+                    <h2>Mic'n'Frac</h2>
+                    <span class="id-number">ID: 002</span>
+                </div>
+                <p class="tags">[#So] [#Fractals] [#Interacció]</p>
+                <div class="terminal-text">
+                    <p>Fractals generatius reactius al so del micròfon. El paisatge visual muta segons l’energia sonora d'entrada.</p>
+                </div>
+                <a class="project-btn" href="projects/Micnfrac_AC04_PauVera/index.html">
+                    [ EXECUTAR PROJECTE ]
+                </a>
+            </section>
+
+            <section class="project-card">
+                <div class="card-header">
+                    <h2>AC3 — Experiment Generatiu</h2>
+                    <span class="id-number">ID: 003</span>
+                </div>
+                <p class="tags">[#ArtGeneratiu] [#Algoritmes]</p>
+                <div class="terminal-text">
+                    <p>Exploració visual basada en regles simples. Composicions emergents calculades en temps real.</p>
+                </div>
+                <a class="project-btn" href="projects/AC3_PauVera/index.html">
+                    [ EXECUTAR PROJECTE ]
+                </a>
+            </section>
+
+            <section class="project-card">
+                <div class="card-header">
+                    <h2>Random Program</h2>
+                    <span class="id-number">ID: 004</span>
+                </div>
+                <p class="tags">[#Atzar] [#Seeds] [#Generatiu]</p>
+                <div class="terminal-text">
+                    <p>Sistema generatiu basat en llavors aleatòries (seeds). Cada execució produeix una instància única.</p>
+                </div>
+                <a class="project-btn" href="projects/RandomProg_PauVera/index.html">
+                    [ EXECUTAR PROJECTE ]
+                </a>
+            </section>
+
+            <section class="project-card">
+                <div class="card-header">
+                    <h2>Memòria Creativa</h2>
+                    <span class="id-number">DOC: README</span>
+                </div>
+                <p class="tags">[#Document] [#Reflexió] [#Dades]</p>
+                <div class="terminal-text">
+                    <p>Registre de dades del portafoli. Reflexions sobre el procés, decisions tècniques i log de canvis estètics.</p>
+                </div>
+                <a class="project-btn" href="README.md" target="_blank">
+                    [ LLEGIR DADES ]
+                </a>
+            </section>
+
+        </main>
+
+        <footer>
+            <p>SYSTEM STATUS: ONLINE // Projecte Final · Art Digital · 2026</p>
+        </footer>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('matrix-bg');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const characters = '01PauVeraXY0101ZEBRA0101WTF01'; // Pots personalitzar els caràcters
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+
+        const drops = [];
+        for (let i = 0; i < columns; i++) {
+            drops[i] = 1;
+        }
+
+        function draw() {
+            // Fons negre amb molta transparència per crear l'efecte d'estela (trail)
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#0F0'; // Color verd Matrix
+            ctx.font = fontSize + 'px "Share Tech Mono"';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = characters.charAt(Math.floor(Math.random() * characters.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(draw, 33);
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
