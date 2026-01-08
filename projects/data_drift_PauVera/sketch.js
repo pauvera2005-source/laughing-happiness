@@ -25,34 +25,21 @@ const virus = {
 }
 
 let tiltY = 0
+let hasOrientation = false
 
 const chars = "01PAUVERADATAHACKER"
 
 window.addEventListener("deviceorientation", e => {
-    tiltY = e.gamma || 0
+    if (e.gamma !== null) {
+        tiltY = e.gamma
+        hasOrientation = true
+    }
 })
 
 window.addEventListener("keydown", e => {
     if (e.key === "ArrowUp") virus.velocity = -3
     if (e.key === "ArrowDown") virus.velocity = 3
 })
-
-async function requestStart() {
-    if (running) return
-
-    if (
-        typeof DeviceOrientationEvent !== "undefined" &&
-        typeof DeviceOrientationEvent.requestPermission === "function"
-    ) {
-        const permission = await DeviceOrientationEvent.requestPermission()
-        if (permission !== "granted") return
-    }
-
-    startGame()
-}
-
-window.addEventListener("touchstart", requestStart, { once: true })
-window.addEventListener("click", requestStart, { once: true })
 
 function startGame() {
     running = true
@@ -96,8 +83,12 @@ function loop() {
 
     ctx.font = "14px Share Tech Mono"
 
-    virus.velocity = tiltY * 0.15
+    if (hasOrientation) {
+        virus.velocity = tiltY * 0.15
+    }
+
     virus.y += virus.velocity
+    virus.velocity *= 0.98
     virus.y = Math.max(0, Math.min(canvas.height, virus.y))
 
     if (columns.length === 0 || columns[columns.length - 1].x < canvas.width - 220) {
@@ -133,3 +124,5 @@ function loop() {
 
     requestAnimationFrame(loop)
 }
+
+setTimeout(startGame, 3000)
